@@ -1,24 +1,27 @@
-FROM php:8.2-fpm
+FROM php:8.5-fpm
 
 # Echo user info for debugging
 RUN echo "User: $(whoami) | UID: $(id -u) | GID: $(id -g) | Groups: $(groups)"
 
 # =========================================================
-# 1. System dependencies
+# 1. System dependencies (Added libmemcached-dev and zlib1g-dev)
 # =========================================================
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     wget unzip procps default-mysql-client curl vim net-tools gcc make sudo \
-    apache2 libapache2-mod-fcgid && \
+    apache2 libapache2-mod-fcgid \
+    libmemcached-dev zlib1g-dev libssl-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Enable Apache modules for PHP-FPM proxying
 RUN a2enmod proxy proxy_http proxy_fcgi setenvif rewrite ssl headers
 
 # =========================================================
-# 2. PHP extensions
+# 2. PHP extensions (Added memcached via PECL)
 # =========================================================
-RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install mysqli && \
+    pecl install memcached && \
+    docker-php-ext-enable memcached
 
 # =========================================================
 # 3. Site24x7 agents
@@ -43,15 +46,12 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # =========================================================
-# 6. Default Apache configuration (can be overridden)
+# 6. Default Apache configuration
 # =========================================================
-# You can override this file when running locally or in downstream builds
 COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
 
-# Make sure Apache and PHP-FPM can both access /var/www/html
 RUN chown -R buildprocure:www-data /var/www/html
 
-# Expose both Apache and PHP-FPM ports
 EXPOSE 80 9000 443
 
 USER root
