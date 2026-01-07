@@ -52,7 +52,7 @@ RUN curl -OL https://www.pdflib.com/binaries/PDFlib/1100/PDFlib-11.0.0-Linux-x64
     EXT_DIR=$(php-config --extension-dir); \
     \
     # Copy specifically to the filename PHP expects
-    cp PDFlib-11.0.0-Linux-x64-php/bind/php/php-850-nts/php_pdflib.so "$EXT_DIR/pdflib.so"; \
+    cp PDFlib-11.0.0-Linux-x64-php/bind/php/php-850-nts/php_pdflib.so /usr/local/lib/php/extensions/no-debug-non-zts-20250925/pdflib.so; \
     \
     # Verify the file exists right now - if this fails, the build stops
     ls -l "/usr/local/lib/php/extensions/no-debug-non-zts-20250925/pdflib.so"; \
