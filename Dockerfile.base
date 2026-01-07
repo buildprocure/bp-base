@@ -29,16 +29,16 @@ RUN docker-php-ext-install mysqli && \
 # =========================================================
 #2.1 Install pdf lib 
 # =========================================================
-RUN curl -fsSL https://www.pdflib.com/binaries/PDFlib/1005/PDFlib-10.0.5p1.tar.gz \
-    -o /tmp/pdflib.tar.gz && \
-    tar -xzf /tmp/pdflib.tar.gz -C /tmp && \
-    cd /tmp/PDFlib-10.0.5p1/bind/php && \
-    phpize && \
-    ./configure && \
-    make -j$(nproc) && \
-    make install && \
-    docker-php-ext-enable pdflib && \
-    rm -rf /tmp/*
+# Example snippet
+RUN curl -fsSL <PDFlib-source-tarball> -o /tmp/pdflib.tar.gz \
+ && tar -xzf /tmp/pdflib.tar.gz -C /tmp \
+ && cd /tmp/PDFlib-<version>/bind/php \
+ && phpize \
+ && ./configure \
+ && make -j$(nproc) \
+ && make install \
+ && docker-php-ext-enable pdflib \
+ && rm -rf /tmp/*
 # =========================================================
 # 3. Site24x7 agents
 # =========================================================
