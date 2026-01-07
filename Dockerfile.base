@@ -58,7 +58,7 @@ RUN curl -OL https://www.pdflib.com/binaries/PDFlib/1100/PDFlib-11.0.0-Linux-x64
     ls -l "$EXT_DIR/pdflib.so"; \
     rm PDFlib-11.0.0-Linux-x64-php.tar.gz; \
     rm -rf PDFlib-11.0.0-Linux-x64-php; \
-    docker-php-ext-enable php_pdflib
+    docker-php-ext-enable pdflib.so
 
 
 # =========================================================
