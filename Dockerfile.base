@@ -30,8 +30,21 @@ RUN docker-php-ext-install mysqli && \
 #2.1 Install pdf lib 
 # =========================================================
 # Example snippet
-COPY pdflib/php_pdflib.so /usr/local/lib/php/extensions/no-debug-non-zts-20250925/
-RUN docker-php-ext-enable php_pdflib
+RUN set -ex; \
+    PDFLIB_VER="11.0.0"; \
+    PDFLIB_URL="https://www.pdflib.com/binaries/PDFlib/1100/PDFlib-${PDFLIB_VER}-Linux-x64-php.tar.gz"; \
+    \
+    # Create temp directory
+    mkdir -p /tmp/pdflib; \
+    curl -fsSL "$PDFLIB_URL" -o /tmp/pdflib.tar.gz; \
+    tar -xzf /tmp/pdflib.tar.gz -C /tmp/pdflib --strip-components=1; \
+    \
+    # Move the specific PHP 8.5 NTS extension to the correct PHP folder
+    mv /tmp/pdflib/bind/php/php-850-nts/php_pdflib.so $(php-config --extension-dir)/; \
+    \
+    # Enable it and cleanup
+    docker-php-ext-enable php_pdflib; \
+    rm -rf /tmp/pdflib.tar.gz /tmp/pdflib
 
 # =========================================================
 # 3. Site24x7 agents
