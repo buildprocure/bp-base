@@ -10,11 +10,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     wget unzip procps default-mysql-client curl vim net-tools gcc make sudo \
     apache2 libapache2-mod-fcgid \
-    libmemcached-dev zlib1g-dev libssl-dev && \
+    libmemcached-dev zlib1g-dev libssl-dev \
     build-essential \
     autoconf \
     libtool \
-    libxml2-dev \
+    libxml2-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Enable Apache modules for PHP-FPM proxying
