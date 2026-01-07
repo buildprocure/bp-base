@@ -30,21 +30,29 @@ RUN docker-php-ext-install mysqli && \
 #2.1 Install pdf lib 
 # =========================================================
 # Example snippet
-RUN set -ex; \
-    PDFLIB_VER="11.0.0"; \
-    PDFLIB_URL="https://www.pdflib.com/binaries/PDFlib/1100/PDFlib-${PDFLIB_VER}-Linux-x64-php.tar.gz"; \
-    \
-    # Create temp directory
-    mkdir -p /tmp/pdflib; \
-    curl -fsSL "$PDFLIB_URL" -o /tmp/pdflib.tar.gz; \
-    tar -xzf /tmp/pdflib.tar.gz -C /tmp/pdflib --strip-components=1; \
-    \
-    # Move the specific PHP 8.5 NTS extension to the correct PHP folder
-    mv /tmp/pdflib/bind/php/php-850-nts/php_pdflib.so $(php-config --extension-dir)/; \
-    \
-    # Enable it and cleanup
-    docker-php-ext-enable php_pdflib; \
-    rm -rf /tmp/pdflib.tar.gz /tmp/pdflib
+# RUN set -ex; \
+#     PDFLIB_VER="11.0.0"; \
+#     PDFLIB_URL="https://www.pdflib.com/binaries/PDFlib/1100/PDFlib-${PDFLIB_VER}-Linux-x64-php.tar.gz"; \
+#     \
+#     # Create temp directory
+#     mkdir -p /tmp/pdflib; \
+#     curl -fsSL "$PDFLIB_URL" -o /tmp/pdflib.tar.gz; \
+#     tar -xzf /tmp/pdflib.tar.gz -C /tmp/pdflib --strip-components=1; \
+#     \
+#     # Move the specific PHP 8.5 NTS extension to the correct PHP folder
+#     mv /tmp/pdflib/bind/php/php-850-nts/php_pdflib.so $(php-config --extension-dir)/; \
+#     \
+#     # Enable it and cleanup
+#     docker-php-ext-enable php_pdflib; \
+#     rm -rf /tmp/pdflib.tar.gz /tmp/pdflib
+
+RUN curl -OL https://www.pdflib.com/binaries/PDFlib/1100/PDFlib-11.0.0-Linux-x64-php.tar.gz; \
+    tar -xf PDFlib-11.0.0-Linux-x64-php.tar.gz; \
+    # Using php-config here is safer than hardcoding the long date string
+    cp PDFlib-11.0.0-Linux-x64-php/bind/php/php-850-nts/php_pdflib.so $(php-config --extension-dir); \
+    rm PDFlib-11.0.0-Linux-x64-php.tar.gz; \
+    rm -rf PDFlib-11.0.0-Linux-x64-php; \
+    docker-php-ext-enable php_pdflib
 
 # =========================================================
 # 3. Site24x7 agents
