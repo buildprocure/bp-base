@@ -45,14 +45,21 @@ RUN docker-php-ext-install mysqli && \
 #     # Enable it and cleanup
 #     docker-php-ext-enable php_pdflib; \
 #     rm -rf /tmp/pdflib.tar.gz /tmp/pdflib
-
 RUN curl -OL https://www.pdflib.com/binaries/PDFlib/1100/PDFlib-11.0.0-Linux-x64-php.tar.gz; \
     tar -xf PDFlib-11.0.0-Linux-x64-php.tar.gz; \
     # Using php-config here is safer than hardcoding the long date string
-    cp PDFlib-11.0.0-Linux-x64-php/bind/php/php-850-nts/php_pdflib.so $(php-config --extension-dir); \
+    # Create the variable for the target directory
+    EXT_DIR=$(php-config --extension-dir); \
+    \
+    # Copy specifically to the filename PHP expects
+    cp PDFlib-11.0.0-Linux-x64-php/bind/php/php-850-nts/php_pdflib.so "$EXT_DIR/pdflib.so"; \
+    \
+    # Verify the file exists right now - if this fails, the build stops
+    ls -l "$EXT_DIR/pdflib.so"; \
     rm PDFlib-11.0.0-Linux-x64-php.tar.gz; \
     rm -rf PDFlib-11.0.0-Linux-x64-php; \
     docker-php-ext-enable php_pdflib
+
 
 # =========================================================
 # 3. Site24x7 agents
