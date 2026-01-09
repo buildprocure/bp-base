@@ -8,13 +8,19 @@ RUN echo "User: $(whoami) | UID: $(id -u) | GID: $(id -g) | Groups: $(groups)"
 # =========================================================
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    # Standard utilities and networking tools
     wget unzip procps default-mysql-client curl vim net-tools gcc make sudo \
+    # Apache and related modules
     apache2 libapache2-mod-fcgid \
+    # Libraries for PHP extensions
     libmemcached-dev zlib1g-dev libssl-dev \
     build-essential \
     autoconf \
     libtool \
-    libxml2-dev && \
+    libxml2-dev \
+    # this php-gd is required for image processing in php
+    php-gd && \
+    # Clean up apt cache to reduce image size
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Enable Apache modules for PHP-FPM proxying
@@ -25,7 +31,9 @@ RUN a2enmod proxy proxy_http proxy_fcgi setenvif rewrite ssl headers
 # =========================================================
 RUN docker-php-ext-install mysqli && \
     pecl install memcached && \
-    docker-php-ext-enable memcached
+    docker-php-ext-enable memcached && \
+    docker-php-ext-install zip && \
+    docker-php-ext-install gd
 # =========================================================
 #2.1 Install pdf lib 
 # =========================================================
