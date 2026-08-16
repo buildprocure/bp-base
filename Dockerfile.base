@@ -2,7 +2,8 @@ FROM php:8.5-fpm
 
 # Echo user info for debugging
 RUN echo "User: $(whoami) | UID: $(id -u) | GID: $(id -g) | Groups: $(groups)"
-
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+RUN composer --version
 # =========================================================
 # 1. System dependencies (Added libmemcached-dev and zlib1g-dev)
 # =========================================================
