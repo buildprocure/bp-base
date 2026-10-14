@@ -64,6 +64,11 @@ RUN chmod +x /entrypoint.sh
 # =========================================================
 COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
 
+# =========================================================
+# 6.1 Production PHP error handling (log, never display)
+# =========================================================
+COPY php-prod.ini /usr/local/etc/php/conf.d/zz-prod-errors.ini
+
 RUN chown -R buildprocure:www-data /var/www/html
 
 EXPOSE 80 9000 443
